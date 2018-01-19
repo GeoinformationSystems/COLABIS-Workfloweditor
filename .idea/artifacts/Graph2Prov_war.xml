@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" build-on-make="true" name="Graph2Prov:war">
+    <output-path>$PROJECT_DIR$/out/artifacts/Graph2Prov_war</output-path>
+    <root id="archive" name="graph2prov.war">
+      <element id="artifact" artifact-name="Graph2Prov:war exploded" />
+    </root>
+  </artifact>
+</component>
