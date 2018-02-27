@@ -4,6 +4,7 @@ currentFile=Current File
 toolbar=Tools
 open=Load SWW Workflow
 save=Save
+importPROV=Import Workflow from PROV
 exportGraph=Export Workflow as Graph
 exportPROV=Export Workflow as PROV
 print=Print

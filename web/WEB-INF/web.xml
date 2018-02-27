@@ -5,6 +5,10 @@
          version="3.1">
 
     <servlet>
+        <servlet-name>Prov2Graph</servlet-name>
+        <servlet-class>de.tud.uw.geo.gi.colabis.workflow.Prov2Graph</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>Graph2Prov</servlet-name>
         <servlet-class>de.tud.uw.geo.gi.colabis.workflow.Graph2Prov</servlet-class>
     </servlet>
@@ -12,6 +16,10 @@
         <servlet-name>Graph2XML</servlet-name>
         <servlet-class>de.tud.uw.geo.gi.colabis.workflow.Graph2XML</servlet-class>
     </servlet>
+    <servlet-mapping>
+        <servlet-name>Prov2Graph</servlet-name>
+        <url-pattern>/importPROV</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Graph2Prov</servlet-name>
         <url-pattern>/savePROV</url-pattern>

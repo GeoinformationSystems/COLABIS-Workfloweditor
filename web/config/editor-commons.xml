@@ -1,28 +1,27 @@
 <mxEditor>
-	<ui>
-		<resource basename="resources/app"/>
-	</ui>
-	<mxDefaultPopupMenu as="popupHandler">
-		<add as="cut" action="cut" icon="images/DMP/cut.png"/>
-		<add as="copy" action="copy" icon="images/DMP/copy-document.png"/>
-		<add as="paste" action="paste" icon="images/DMP/paste-from-clipboard.png"/>
-		<separator/>
-		<add as="delete" action="delete" icon="images/DMP/double-sided-eraser.png" if="cell"/>
-	</mxDefaultPopupMenu>
-	<include name="config/keyhandler-commons.xml"/>
-	<Array as="actions">
-		<add as="open"><![CDATA[
+    <ui>
+        <resource basename="resources/app"/>
+    </ui>
+    <mxDefaultPopupMenu as="popupHandler">
+        <add as="cut" action="cut" icon="images/DMP/cut.png"/>
+        <add as="copy" action="copy" icon="images/DMP/copy-document.png"/>
+        <add as="paste" action="paste" icon="images/DMP/paste-from-clipboard.png"/>
+        <separator/>
+        <add as="delete" action="delete" icon="images/DMP/double-sided-eraser.png" if="cell"/>
+    </mxDefaultPopupMenu>
+    <include name="config/keyhandler-commons.xml"/>
+    <Array as="actions">
+        <add as="open"><![CDATA[
 			function (editor)
 			{
+				editor.graph.removeCells(editor.graph.getChildCells(editor.graph.getDefaultParent(), true, true));
 				editor.graph.getModel().beginUpdate();
 				try
 				{
-					var req = mxUtils.load('resources/FullSWWWorkflow.xml');
+					var req = mxUtils.load('resources/SWWConverted.xml');
 					var root = req.getDocumentElement();
 					var dec = new mxCodec(root.ownerDocument);
-
 					dec.decode(root, editor.graph.getModel());
-
 					var parent = editor.graph.getDefaultParent();
 				}
 				finally
@@ -35,21 +34,27 @@
 				}
 			}
 		]]></add>
-		<add as="exportGraph"><![CDATA[
+        <add as="importPROV"><![CDATA[
+			function(editor){
+				$('#myModal').modal('show')
+			}
+		]]>
+        </add>
+        <add as="exportGraph"><![CDATA[
 			function(editor){
 				var encoder = new mxCodec();
 				var node = encoder.encode(editor.graph.getModel());
 				new mxXmlRequest("./saveXML", 'filename=exportGraph&xml=' + encodeURIComponent(mxUtils.getPrettyXml(node))).simulate(document, '_blank');
 			}
 		]]>
-		</add>
-		<add as="exportPROV"><![CDATA[
+        </add>
+        <add as="exportPROV"><![CDATA[
 			function(editor){
 				var encoder = new mxCodec();
 				var node = encoder.encode(editor.graph.getModel());
-				new mxXmlRequest("./savePROV", 'filename=exportPROV&xml=' + encodeURIComponent(mxUtils.getPrettyXml(node))).simulate(document, '_blank');
+					new mxXmlRequest("./savePROV", 'filename=exportPROV&xml=' + encodeURIComponent(mxUtils.getPrettyXml(node))).simulate(document, '_blank');
 			}
 		]]>
-		</add>
-	</Array>
+        </add>
+    </Array>
 </mxEditor>

@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
     <!-- Custom styles for this template -->
     <link href="css/bootstrap.css" rel="stylesheet">
-
+    <script src="jquery/jquery-3.3.1.min.js"></script>
     <script type="text/javascript">
         var mxBasePath = 'mxgraph';
 
@@ -41,6 +41,80 @@
     <script type="text/javascript" src="js/ShapesDMP.js"></script>
     <script type="text/javascript">
         function onInit(editor) {
+            $('#myModal').modal({ show: false});
+
+            $("#upload").bind("click", function () {
+                var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xml)$/;
+                if (regex.test($("#fileUpload").val().toLowerCase())) {
+                    if (typeof (FileReader) != "undefined") {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: "./importPROV",
+                                    data: {
+                                        'filename': 'exportPROV',
+                                        'xml': escape(e.target.result)
+                                    },
+                                    success: function(data) {
+                                        if (data == null)
+                                            return;
+
+                                        $('#myModal').modal('hide');
+                                        // editor.graph.getModel().beginUpdate();
+
+                                        // editor.graph.removeCells(editor.graph.getChildCells(editor.graph.getDefaultParent(), true, true));
+                                        // var def = editor.graph.getDefaultParent();
+                                        // var childc = editor.graph.getChildCells(def, true, true);
+                                        // var remo = editor.graph.removeCells(childc);
+                                        // editor.graph.view.clear();
+                                        // var vi = editor.graph.view;
+                                        // var gr = editor.graph;
+                                        // editor.graph.getModel().endUpdate();
+                                        // editor.graph.fit();
+                                        // editor.graph.view.rendering = true;
+                                        // editor.graph.refresh();
+                                        // editor.graph.view.revalidate();
+                                        // editor.graph.view.refresh();
+
+                                        editor.graph.getModel().beginUpdate();
+
+
+                                        try
+                                        {
+                                            editor.graph.removeCells(editor.graph.getChildCells(editor.graph.getDefaultParent(), true, true));
+
+                                            var root = mxUtils.parseXml(data).documentElement;
+                                            var dec = new mxCodec(root.ownerDocument);
+
+                                            dec.decode(root, editor.graph.getModel());
+
+                                            // editor.readGraphModel(root);
+
+                                            // var dec = new mxCodec(root.ownerDocument);
+                                            // dec.decode(root, editor.graph.getModel());
+                                            // var parent = editor.graph.getDefaultParent();
+                                        }
+                                        finally
+                                        {
+                                            // Updates the display and fit the graph
+                                            editor.graph.getModel().endUpdate();
+                                            editor.graph.fit();
+                                            editor.graph.view.rendering = true;
+                                            editor.graph.refresh();
+                                        }
+                                    }
+                                });
+                        }
+                        reader.readAsText($("#fileUpload")[0].files[0]);
+                    } else {
+                        alert("This browser does not support HTML5.");
+                    }
+                } else {
+                    alert("Please upload a valid XML file.");
+                }
+            });
+
             mxVertexHandler.prototype.rotationEnabled = false;
             mxGraphHandler.prototype.guidesEnabled = true;
             mxGuide.prototype.isEnabledForEvent = function (evt) {
@@ -90,11 +164,12 @@
                 }
             });
 
-            var node = document.getElementById('mainActions');
-            var buttons = ['open', 'exportGraph', 'exportPROV'];
-
             mxEvent.addListener(document.getElementById("loadWFButton"), 'click', function () {
                 editor.execute('open')
+            });
+            mxEvent.addListener(document.getElementById("importWFPROVButton"), 'click', function () {
+                console.log("HOIHIHIHHIHI");
+                editor.execute('importPROV');
             });
             mxEvent.addListener(document.getElementById("exportWFGraphButton"), 'click', function () {
                 editor.execute('exportGraph');
@@ -113,7 +188,10 @@
                 editor.execute('fit')
             });
             mxEvent.addListener(document.getElementById("hierarchicalButton"), 'click', function () {
-                var layout = new mxHierarchicalLayout(editor.graph);
+                var layout = new mxHierarchicalLayout(editor.graph, mxConstants.DIRECTION_WEST, true);
+                layout.interHierarchySpacing = 30;
+                layout.interRankCellSpacing = 30;
+                layout.intraCellSpacing = 30;
                 var parent = editor.graph.getDefaultParent();
                 layout.execute(parent);
                 editor.graph.fit();
@@ -134,7 +212,6 @@
             });
 
             editor.graph.addListener(mxEvent.LABEL_CHANGED, function (sender, evt) {
-
                 editor.graph.refresh();
                 editor.graph.updateCellSize(evt.properties.cell);
             });
@@ -153,7 +230,6 @@
                         result.width += 50;
                     }
                 }
-
                 return result;
             };
 
@@ -164,7 +240,6 @@
                 if (source.getStyle() == "actorDMP") {
 
                     var style = editor.graph.getCellStyle(edge);
-
                     var newStyle = editor.graph.stylesheet.getCellStyle("edgeStyle=elbowEdgeStyle;html=1;dashed=1;rounded=1;jettySize=auto;orthogonalLoop=1;strokeColor=#727675;strokeWidth=1;endArrow=openThin;startArrow=oval;", style); //Method will merge styles into a new style object.  We must translate to string from here
                     var array = [];
                     for (var prop in newStyle)
@@ -197,6 +272,25 @@
 </head>
 
 <body onload="createEditor('config/diagrameditor.xml');">
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">File upload form</h4>
+            </div>
+            <div class="modal-body">
+                <input type="file" id="fileUpload">
+                <input type="button" id="upload" value="Upload">
+                <hr/>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!--<body>-->
 <nav class="navbar  navbar-expand-md navbar-dark bg-dark fixed-top">
     <a class="navbar-brand" href="#">
@@ -211,10 +305,12 @@
             <li class="nav-item">
                 <a class="nav-link" id="loadWFButton" href="#">Load SWW Workflow</a>
             </li>
+            <li class ="nav-item">
+                <a class="nav-link" id="importWFPROVButton" href="#">Import from PROV</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" id="exportWFGraphButton" href="#">Export as Graph</a>
             </li>
-
             <li class="nav-item">
                 <a class="nav-link" id="exportWFPROVButton" href="#">Export as PROV</a>
             </li>
@@ -266,7 +362,7 @@
         </div>
     </div>
 </div><!-- /.container -->
-<script src="jquery/jquery-3.2.1.slim.min.js"></script>
+
 <script>window.jQuery || document.write('<script src="bootstrap/assets/js/vendor/jquery.min.js"><\/script>')</script>
 <script src="bootstrap/assets/js/vendor/popper.min.js"></script>
 <script src="bootstrap/dist/js/bootstrap.min.js"></script>
