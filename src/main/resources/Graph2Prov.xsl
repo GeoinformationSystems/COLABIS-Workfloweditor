@@ -3,7 +3,7 @@
                 xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs"
                 xmlns:prov="http://www.w3.org/ns/prov#"
                 xmlns:graph="https://jgraph.github.io/mxgraph/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://example.org/" version="1.0">
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://colabis.de/" version="1.0">
     <xsl:output method="xml"/>
     <!--    <xsl:strip-space elements="*"/>-->
     <xsl:template match="/">
@@ -24,6 +24,9 @@
             <graph:information graph:id="{./@id}">
                 <xsl:copy-of select="./node()"/>
             </graph:information>
+            <graph:metadata>
+                <xsl:copy-of select="@*[name()!='label'][name()!='href'][name()!='id']"/>
+            </graph:metadata>
         </prov:entity>
     </xsl:template>
     <!-- prov:activity -->
@@ -32,6 +35,9 @@
             <graph:information graph:id="{./@id}">
                 <xsl:copy-of select="./node()"/>
             </graph:information>
+            <graph:metadata>
+                <xsl:copy-of select="@*[name()!='label'][name()!='href'][name()!='id']"/>
+            </graph:metadata>
         </prov:activity>
     </xsl:template>
     <!-- prov:organization -->
@@ -40,6 +46,9 @@
             <graph:information graph:id="{./@id}">
                 <xsl:copy-of select="./node()"/>
             </graph:information>
+            <graph:metadata>
+                <xsl:copy-of select="@*[name()!='label'][name()!='href'][name()!='id']"/>
+            </graph:metadata>
         </prov:organization>
     </xsl:template>
     <!-- Connections between prov elements -->
@@ -57,6 +66,9 @@
                     <graph:information graph:id="{./@id}">
                         <xsl:copy-of select="./node()"/>
                     </graph:information>
+                    <graph:metadata>
+                        <xsl:copy-of select="@*[name()!='label'][name()!='href'][name()!='id']"/>
+                    </graph:metadata>
                 </prov:wasAssociatedWith>
             </xsl:when>
             <!-- prov:wasAttributedTo -->
@@ -67,6 +79,9 @@
                     <graph:information graph:id="{./@id}">
                         <xsl:copy-of select="./node()"/>
                     </graph:information>
+                    <graph:metadata>
+                        <xsl:copy-of select="@*[name()!='label'][name()!='href'][name()!='id']"/>
+                    </graph:metadata>
                 </prov:wasAttributedTo>
             </xsl:when>
             <!-- prov:used -->
@@ -77,6 +92,9 @@
                     <graph:information graph:id="{./@id}">
                         <xsl:copy-of select="./node()"/>
                     </graph:information>
+                    <graph:metadata>
+                        <xsl:copy-of select="@*[name()!='label'][name()!='href'][name()!='id']"/>
+                    </graph:metadata>
                 </prov:used>
             </xsl:when>
             <!-- prov:wasGenereatedBy -->
@@ -87,6 +105,9 @@
                     <graph:information graph:id="{./@id}">
                         <xsl:copy-of select="./node()"/>
                     </graph:information>
+                    <graph:metadata>
+                        <xsl:copy-of select="@*[name()!='label'][name()!='href'][name()!='id']"/>
+                    </graph:metadata>
                 </prov:wasGeneratedBy>
             </xsl:when>
         </xsl:choose>

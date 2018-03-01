@@ -6,8 +6,11 @@
         <add as="cut" action="cut" icon="images/DMP/cut.png"/>
         <add as="copy" action="copy" icon="images/DMP/copy-document.png"/>
         <add as="paste" action="paste" icon="images/DMP/paste-from-clipboard.png"/>
-        <separator/>
+        <separator if="cell"/>
+        <add as="properties" action="editMetadata" icon="images/DMP/font-selection-editor.png" if="cell"/>
+        <separator if="cell"/>
         <add as="delete" action="delete" icon="images/DMP/double-sided-eraser.png" if="cell"/>
+
     </mxDefaultPopupMenu>
     <include name="config/keyhandler-commons.xml"/>
     <Array as="actions">
@@ -36,7 +39,7 @@
 		]]></add>
         <add as="importPROV"><![CDATA[
 			function(editor){
-				$('#myModal').modal('show')
+				$('#uploadModal').modal('show');
 			}
 		]]>
         </add>

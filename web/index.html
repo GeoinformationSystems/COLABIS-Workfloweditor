@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-     <link rel="icon" href="images/DMP/favicon.ico">
+    <link rel="icon" href="images/DMP/favicon.ico">
 
     <title>COLABIS Workfloweditor</title>
 
@@ -41,7 +41,7 @@
     <script type="text/javascript" src="js/ShapesDMP.js"></script>
     <script type="text/javascript">
         function onInit(editor) {
-            $('#myModal').modal({ show: false});
+            $('#uploadModal').modal({show: false});
 
             $("#upload").bind("click", function () {
                 var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xml)$/;
@@ -49,62 +49,35 @@
                     if (typeof (FileReader) != "undefined") {
                         var reader = new FileReader();
                         reader.onload = function (e) {
-                                $.ajax({
-                                    type: 'POST',
-                                    url: "./importPROV",
-                                    data: {
-                                        'filename': 'exportPROV',
-                                        'xml': escape(e.target.result)
-                                    },
-                                    success: function(data) {
-                                        if (data == null)
-                                            return;
+                            $.ajax({
+                                type: 'POST',
+                                url: "./importPROV",
+                                data: {
+                                    'filename': 'exportPROV',
+                                    'xml': escape(e.target.result)
+                                },
+                                success: function (data) {
+                                    if (data == null)
+                                        return;
 
-                                        $('#myModal').modal('hide');
-                                        // editor.graph.getModel().beginUpdate();
+                                    $('#myModal').modal('hide');
+                                    editor.graph.getModel().beginUpdate();
 
-                                        // editor.graph.removeCells(editor.graph.getChildCells(editor.graph.getDefaultParent(), true, true));
-                                        // var def = editor.graph.getDefaultParent();
-                                        // var childc = editor.graph.getChildCells(def, true, true);
-                                        // var remo = editor.graph.removeCells(childc);
-                                        // editor.graph.view.clear();
-                                        // var vi = editor.graph.view;
-                                        // var gr = editor.graph;
-                                        // editor.graph.getModel().endUpdate();
-                                        // editor.graph.fit();
-                                        // editor.graph.view.rendering = true;
-                                        // editor.graph.refresh();
-                                        // editor.graph.view.revalidate();
-                                        // editor.graph.view.refresh();
-
-                                        editor.graph.getModel().beginUpdate();
-
-
-                                        try
-                                        {
-                                            editor.graph.removeCells(editor.graph.getChildCells(editor.graph.getDefaultParent(), true, true));
-
-                                            var root = mxUtils.parseXml(data).documentElement;
-                                            var dec = new mxCodec(root.ownerDocument);
-
-                                            dec.decode(root, editor.graph.getModel());
-
-                                            // editor.readGraphModel(root);
-
-                                            // var dec = new mxCodec(root.ownerDocument);
-                                            // dec.decode(root, editor.graph.getModel());
-                                            // var parent = editor.graph.getDefaultParent();
-                                        }
-                                        finally
-                                        {
-                                            // Updates the display and fit the graph
-                                            editor.graph.getModel().endUpdate();
-                                            editor.graph.fit();
-                                            editor.graph.view.rendering = true;
-                                            editor.graph.refresh();
-                                        }
+                                    try {
+                                        editor.graph.removeCells(editor.graph.getChildCells(editor.graph.getDefaultParent(), true, true));
+                                        var root = mxUtils.parseXml(data).documentElement;
+                                        var dec = new mxCodec(root.ownerDocument);
+                                        dec.decode(root, editor.graph.getModel());
                                     }
-                                });
+                                    finally {
+                                        // Updates the display and fit the graph
+                                        editor.graph.getModel().endUpdate();
+                                        editor.graph.fit();
+                                        editor.graph.view.rendering = true;
+                                        editor.graph.refresh();
+                                    }
+                                }
+                            });
                         }
                         reader.readAsText($("#fileUpload")[0].files[0]);
                     } else {
@@ -262,6 +235,18 @@
                     }
                 }
             };
+
+            editor.addAction('editMetadata', function (editor, cell) {
+                console.log(editor);
+                console.log(cell);
+
+                if (cell != null) {
+                    var dlg = new EditDataDialog(editor, cell);
+                    $('#editMetadataModal').modal('show');
+                    // ui.showDialog(dlg.container, 320, 320, true, false);
+                    // dlg.init();
+                }
+            })
         }
 
         window.onbeforeunload = function () {
@@ -274,7 +259,7 @@
 <body onload="createEditor('config/diagrameditor.xml');">
 
 <!-- Modal -->
-<div id="myModal" class="modal fade" role="dialog">
+<div id="uploadModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
         <div class="modal-content">
@@ -283,9 +268,29 @@
                 <h4 class="modal-title">File upload form</h4>
             </div>
             <div class="modal-body">
-                <input type="file" id="fileUpload">
-                <input type="button" id="upload" value="Upload">
-                <hr/>
+                <input type="file" class="form-control-file" id="fileUpload">
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-primary" data-dismiss="modal" id="upload" value="Upload">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="editMetadataModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Edit Metadata</h4>
+            </div>
+            <div class="modal-body">
+                <div id="editMetadataContent"></div>
+            </div>
+            <div class="modal-footer">
+                <div id="editMetadataFooter"></div>
             </div>
         </div>
     </div>
@@ -305,7 +310,7 @@
             <li class="nav-item">
                 <a class="nav-link" id="loadWFButton" href="#">Load SWW Workflow</a>
             </li>
-            <li class ="nav-item">
+            <li class="nav-item">
                 <a class="nav-link" id="importWFPROVButton" href="#">Import from PROV</a>
             </li>
             <li class="nav-item">
@@ -367,5 +372,6 @@
 <script src="bootstrap/assets/js/vendor/popper.min.js"></script>
 <script src="bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="bootstrap/assets/js/ie10-viewport-bug-workaround.js"></script>
+<script src="js/EditMetadataDialog.js"></script>
 </body>
 </html>
