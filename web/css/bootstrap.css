@@ -224,13 +224,10 @@ td.mxPopupMenuIcon {
 }
 
 
-
 .btn-primary, .btn-primary:hover, .btn-primary:disabled {
     color: rgba(255, 255, 255, .5);
     background-color: #6D7993;
     border-color: #6D7993;
-    margin-right: 10px;
-    margin-left: 10px;
 }
 
 .btn-primary:disabled{
@@ -240,6 +237,11 @@ td.mxPopupMenuIcon {
 
 .btn-primary:hover {
     color: rgba(255, 255, 255, .75);
+}
 
+.btn-secondary:hover {
+    color: rgba(221, 221, 221, 1.0) !important;
+    background-color: #6c757d!important;
+    border-color: #6c757d!important;
 }
 

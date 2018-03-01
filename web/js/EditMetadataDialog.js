@@ -118,6 +118,7 @@ var EditDataDialog = function (editor, cell) {
     nameInput.setAttribute('type', 'text');
     nameInput.setAttribute('size', (mxClient.IS_IE || mxClient.IS_IE11) ? '18' : '22');
     nameInput.style.marginLeft = '2px';
+    nameInput.style.marginRight = '10px';
 
     newProp.appendChild(nameInput);
     div.appendChild(newProp);
@@ -153,6 +154,7 @@ var EditDataDialog = function (editor, cell) {
                 }
 
                 nameInput.value = '';
+                updateAddBtn();
             }
             catch (e) {
                 mxUtils.alert(e);
@@ -181,7 +183,7 @@ var EditDataDialog = function (editor, cell) {
         $('#editMetadataModal').hide();
 
     });
-    cancelBtn.className = 'btn btn-light';
+    cancelBtn.className = 'btn btn-secondary';
     cancelBtn.setAttribute('type', 'button');
     cancelBtn.setAttribute('data-dismiss', 'modal');
 
@@ -234,15 +236,11 @@ var EditDataDialog = function (editor, cell) {
     // Catches all changes that don't fire a keyup (such as paste via mouse)
     mxEvent.addListener(nameInput, 'change', updateAddBtn);
 
-    var buttons = document.createElement('div');
-
-    buttons.appendChild(cancelBtn);
-    buttons.appendChild(applyBtn);
-
     var modalContent = $('#editMetadataContent');
     var modalFooter = $('#editMetadataFooter');
     modalFooter.empty();
-    modalFooter.append(buttons);
+    modalFooter.append(cancelBtn);
+    modalFooter.append(applyBtn);
     modalContent.empty();
     modalContent.append(div);
 };
