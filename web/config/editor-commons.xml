@@ -21,7 +21,7 @@
 				editor.graph.getModel().beginUpdate();
 				try
 				{
-					var req = mxUtils.load('resources/SWWConverted.xml');
+					var req = mxUtils.load('resources/COLABISWorkflowWithMetadata.xml');
 					var root = req.getDocumentElement();
 					var dec = new mxCodec(root.ownerDocument);
 					dec.decode(root, editor.graph.getModel());
