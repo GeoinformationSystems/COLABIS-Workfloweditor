@@ -44,7 +44,7 @@
             $('#uploadModal').modal({show: false});
 
             $("#upload").bind("click", function () {
-                var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xml)$/;
+                var regex = /^([a-zA-Z0-9\s_\\.\-:()])+(.xml)$/;
                 if (regex.test($("#fileUpload").val().toLowerCase())) {
                     if (typeof (FileReader) != "undefined") {
                         var reader = new FileReader();

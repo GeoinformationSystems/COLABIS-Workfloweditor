@@ -51,10 +51,9 @@ public class Prov2Graph extends HttpServlet {
                     Document doc = new SAXBuilder().build(new StringReader(xml));
                     Source xmlFile = new JDOMSource(doc);
                     JDOMResult provResult = new JDOMResult();
-                    Transformer transfomer = TransformerFactory.newInstance().newTransformer(new StreamSource(String.valueOf(getClass().getClassLoader().getResource("Prov2Graph.xsl"))));
-                    transfomer.transform(xmlFile, provResult);
+                    Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(String.valueOf(getClass().getClassLoader().getResource("Prov2Graph.xsl"))));
+                    transformer.transform(xmlFile, provResult);
 
-                    System.out.println(provResult.getDocument().toString());
                     response.setContentType("text/plain");
                     response.setHeader("Content-Disposition",
                             "attachment; filename=\"" + filename
